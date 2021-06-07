@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Hello From Mongo Index HTML File</h1>
     <form action="/addProduct" method="post">
-        <input type="text" name="name" placeholder="Name" id="">
-        <input type="text" name="price" placeholder="Price" id="">
-        <input type="text" name="quantity" placeholder="Quantity" id="">
-        <button type="submit">Add Product</button>
+      <input type="text" name="name" placeholder="Name" id="" />
+      <input type="text" name="price" placeholder="Price" id="" />
+      <input type="text" name="quantity" placeholder="Quantity" id="" />
+      <button type="submit">Add Product</button>
     </form>
-    <div id="products">
-        
-    </div>
+    <div id="products"></div>
     <script type="text/javascript">
-        fetch('/product')
-        .then(res => res.json())
-        .then(data => {
-            const product = document.getElementById('products');
-            data.forEach(pd => {
-                const p = document.createElement('p');
-                p.innerHTML = ` Name : ${pd.name} <br> Price :  ${pd.price} <br> Quantity :  ${pd.quantity}`
-                product.appendChild(p)
-            })
-        } )
+      function deleteItem(id) {
+        fetch(`/delete/${id}`,{
+            method: 'DELETE'
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            console.log(result);
+          })
+          .catch((error) => console.log(error))
+      }
+      fetch("/product")
+        .then((res) => res.json())
+        .then((data) => {
+          const product = document.getElementById("products");
+          data.forEach((pd) => {
+            const p = document.createElement("p");
+            p.innerHTML = ` Name : ${pd.name} <br> Price :  ${pd.price} <br> Quantity :  ${pd.quantity}
+                <button onclick="deleteItem('${pd._id}')"> Delete Item </button>
+                `; // we use single quote in dynamic id , because  each id comes with single quote
+            product.appendChild(p);
+          });
+        });
     </script>
-</body>
+  </body>
 </html>
