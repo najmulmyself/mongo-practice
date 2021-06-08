@@ -15,7 +15,26 @@
       <button type="submit">Add Product</button>
     </form>
     <div id="products"></div>
+    <div id="update"></div>
     <script type="text/javascript">
+
+    function updateProduct(id){
+      const name = document.getElementById('name').value;
+      const price = document.getElementById('price').value;
+      const quantity = document.getElementById('quantity').value;
+      const eachProductField = {name, price, quantity}
+      
+      fetch(`/updateProduct/${id}`,{
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(eachProductField)
+      })
+      .then(res => res.json())
+      .then((data) => {
+        console.log('updated')
+      })
+    }
+
       function deleteItem(id) {
         fetch(`/delete/${id}`,{
             method: 'DELETE'
@@ -26,6 +45,19 @@
           })
           .catch((error) => console.log(error))
       }
+      function loadItem (id) {
+        fetch(`/update/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+            const loadProduct = document.getElementById('update');
+            loadProduct.innerHTML = `
+            <h3> Name : </h3> <input type="text" name="name" value="${data.name}" id="name"> 
+            <p> Price : </p> <input type="text" name="price" value="${data.price}" id="price"> 
+            <p> Quantity : </p> <input type="text" name="quantity" value="${data.quantity}" id="quantity"> <br />
+            <button onclick="updateProduct('${data._id}')"> Update </button>
+            `
+        }) // use used separate Id for dom Operation | we'll call it on updateProduct function
+    }
       fetch("/product")
         .then((res) => res.json())
         .then((data) => {
@@ -33,6 +65,7 @@
           data.forEach((pd) => {
             const p = document.createElement("p");
             p.innerHTML = ` Name : ${pd.name} <br> Price :  ${pd.price} <br> Quantity :  ${pd.quantity}
+                <button onclick="loadItem('${pd._id}')"> Update </button>
                 <button onclick="deleteItem('${pd._id}')"> Delete Item </button>
                 `; // we use single quote in dynamic id , because  each id comes with single quote
             product.appendChild(p);

@@ -56,6 +56,23 @@ client.connect((err) => {
       });
   });
 
+  app.patch('/updateProduct/:id' , (req, res) => {
+    collection.updateOne({_id: ObjectId(req.params.id)},
+    {
+      $set: {name : req.body.name,price: req.body.price, quantity: req.body.quantity}
+    })
+    .then(result => {
+      console.log(result);
+    })
+  });
+
+  app.get("/update/:id", (req, res) => {
+    collection.find({_id: ObjectId(req.params.id)})
+    .toArray((err, documents) => {
+      res.send(documents[0]); // we use array first item , because it will load only one item in array
+    })
+  });
+
   // console.log("Database connected");
   // collection
   //   .insertOne({ name: "Oneplus 7", price: 440, quantity: 3 })
