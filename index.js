@@ -34,14 +34,17 @@ client.connect((err) => {
     collection
       .insertOne(product)
       .then((result) => console.log("Added product"));
-    res.send("Product Added successfully"); // if we successfully insert a data , user will see this message in ui
+    // res.send("Product Added successfully"); // if we successfully insert a data , user will see this message in ui
+    res.redirect("/index"); // page will reload and redirect to /index page
   });
 
   app.delete("/delete/:id", (req, res) => {
     // console.log(req.params.id)
     collection
       .deleteOne({ _id: ObjectId(req.params.id) })
-      .then((result) => console.log(result));
+      .then((result) => {
+        res.send(result.deletedCount > 0) // it will be true if item successfully deleted. that means result is true.
+      });
   });
 
   // showing documents from mongo collection to /product page
@@ -62,7 +65,7 @@ client.connect((err) => {
       $set: {name : req.body.name,price: req.body.price, quantity: req.body.quantity}
     })
     .then(result => {
-      console.log(result);
+      res.send(result.modifiedCount > 0) 
     })
   });
 
